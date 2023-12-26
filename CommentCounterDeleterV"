@@ -1,0 +1,39 @@
+Sub CountAndDeleteComments()
+    Dim UnresolvedCommentsCount As Integer
+    Dim ResolvedCommentsCount As Integer
+    UnresolvedCommentsCount = 0
+    ResolvedCommentsCount = 0
+
+    Dim aComment As Comment
+    For Each aComment In ActiveDocument.Comments
+        If aComment.Done Then
+            ResolvedCommentsCount = ResolvedCommentsCount + 1
+        Else
+            UnresolvedCommentsCount = UnresolvedCommentsCount + 1
+        End If
+    Next aComment
+
+    MsgBox "There are " & UnresolvedCommentsCount & " unresolved comments and " & ResolvedCommentsCount & " resolved comments in this document."
+
+    ' Only ask if there are resolved comments to delete
+    If ResolvedCommentsCount > 0 Then
+        Dim Response As Integer
+        Response = MsgBox("Do you want to delete the resolved comments?", vbYesNo + vbQuestion, "Delete Resolved Comments")
+
+        If Response = vbYes Then
+            ' User chose to delete resolved comments
+            For Each aComment In ActiveDocument.Comments
+                If aComment.Done Then
+                    aComment.Delete
+                End If
+            Next aComment
+            MsgBox "Resolved comments have been deleted."
+        Else
+            ' User chose not to delete resolved comments
+            MsgBox "No comments have been deleted."
+        End If
+    Else
+        MsgBox "There are no resolved comments to delete."
+    End If
+End Sub
+
